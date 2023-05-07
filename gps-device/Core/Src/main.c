@@ -994,7 +994,7 @@ bool processMessageByCommand(const char* message, const char* address, struct De
 		char requestId[REQUEST_ID_LEN+1] = {0};
 		int responseCode = 0;
 
-		if (sscanf(message, "%s", requestId) != 1)
+		if (sscanf(message, "%14s", requestId) != 1)
 			return 0;
 
 		responseCode = 1;
@@ -1007,7 +1007,7 @@ bool processMessageByCommand(const char* message, const char* address, struct De
 		int responseCode = 0;
 		bool unsubscribeSuccess = 0;
 
-		if (sscanf(message, "%s", requestId) != 1)
+		if (sscanf(message, "%14s", requestId) != 1)
 			return 0;
 
 		unsubscribeSuccess = unsubscribe(device, address);
@@ -1023,7 +1023,7 @@ bool processMessageByCommand(const char* message, const char* address, struct De
         float circle[3] = { 0,0,0 };
 		int subscribeSuccess = 0;
 
-		if (sscanf(message, "%s,%f,%f,%f", requestId, &circle[0], &circle[1], &circle[2]) != 4)
+		if (sscanf(message, "%14[^,],%f,%f,%f", requestId, &circle[0], &circle[1], &circle[2]) != 4)
 			return 0;
 		if (!( validNum(circle[0], LATITUDE_MIN, LATITUDE_MAX) && validNum(circle[1], LONGITUDE_MIN, LONGITUDE_MAX) && validNum(circle[2], RADIUS_MIN, RADIUS_MAX)))
 			return 0;
@@ -1175,6 +1175,8 @@ void enterSleep(const int* interval) {
 void workCycle() {
 
 	struct Device device = {0}; //struct Device device = { {52,19}, 1672527600, 120, { 0 } , 0 , {0} };
+
+	device.interval = 120; //factory interval in s
 
 	serviceCycle(&device);
 
