@@ -956,39 +956,7 @@ bool processMessageByCommand(const char* message, const char* address, struct De
 
         return 1;
     }
-    /*
-    case 'i': //setInterval
-    {
-        int interval = 0;
-        if (sscanf(message, "%d", &interval) != 1) {
-            return 0;
-        }
 
-
-        if (!validNum(interval, INTERVAL_MIN, INTERVAL_MAX))
-            return 0;
-
-        int intervalBck = device->interval; //Copy current interval
-        device->interval = interval; //Update with newInterval
-
-        bool success = handleWriteFile(device);
-        if (!success)
-            device->interval = intervalBck; //Undo changes
-
-        char response[MAX_SMS_SIZE] = { 0 }; //sms response
-        if (success) {
-            sprintf(response, "Interval set:\r\n%d", interval);
-        }
-        else {
-            sprintf(response, "Setting interval failed:\r\n%d", interval);
-        }
-
-        //printf("Response:\r\n%s", response);
-        storeSms(address, response);
-
-        return 1;
-    }
-    */
 	case '0': //Position
     {
 		char requestId[REQUEST_ID_LEN+1] = {0};
@@ -1035,30 +1003,7 @@ bool processMessageByCommand(const char* message, const char* address, struct De
         responseCode =  subscribeSuccess ? 11 : (device->count<MAX_PHONES ? 10 : 12);
         return appResponse(device,address,requestId,responseCode);
 	}
-	/*
-	case '3': //Interval
-    {
-		int requestTime = 0;
-		int responseCode = 0;
-		int interval = 0;
-		bool intervalSuccess = 0;
 
-		if (sscanf(message, "%d,%d", &requestTime, &interval) != 2)
-			return 0;
-		if (!(validNum(requestTime, UNIX_TIME_MIN, UNIX_TIME_MAX) && validNum(interval, INTERVAL_MIN, INTERVAL_MAX)))
-			return 0;
-
-        int intervalBck = device->interval; //Copy current interval
-        device->interval = interval; //Update with newInterval
-        intervalSuccess = handleWriteFile(device);
-        if (!intervalSuccess)
-            device->interval = intervalBck; //Undo changes
-
-        responseCode = intervalSuccess ? 31 : 30;
-		return appResponse(device,address,requestTime,responseCode);
-
-    }
-    */
     default:
         return 0;
     }
@@ -1138,7 +1083,7 @@ void serviceCycle(struct Device* device) {
     if (!sendAtCommand("AT+CSDH=1\r",2000,"OK"))
         return;
 
-    if (!sendAtCommand("AT+CNMI=2,0,0,0,0\r",2000,"OK"))
+    if (!sendAtCommand("AT+CNMI=2,0,0,0,0\r",5000,"OK"))
     	return;
 
     if (!sendAtCommand("AT+CPMS=\"SM\",\"ME\",\"SM\"\r",5000,"OK"))
@@ -1172,13 +1117,28 @@ void enterSleep(const int* interval) {
     HAL_ResumeTick();
 }
 
+void enterSleepModule() {
+	//Enable slow clock controlled by DTR.
+	sendAtCommand("AT+CSCLK=1\r",2000,"OK");
+	//set DTR high in order to enter sleep mode
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
+}
+
+void quitSleepModule() {
+	//set DTR low in order to quit sleep mode
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+}
+
 void workCycle() {
 
-	struct Device device = {0}; //struct Device device = { {52,19}, 1672527600, 120, { 0 } , 0 , {0} };
+	quitSleepModule();
 
+	struct Device device = {0}; //struct Device device = { {52,19}, 1672527600, 120, { 0 } , 0 , {0} };
 	device.interval = 120; //factory interval in s
 
 	serviceCycle(&device);
+
+	enterSleepModule();
 
 	enterSleep(&(device.interval));
 
@@ -1420,6 +1380,9 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+
   /*Configure GPIO pins : PC13 PC14 PC15 */
   GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
@@ -1446,12 +1409,19 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PB0 PB1 PB2 PB10
                            PB12 PB13 PB14 PB15
-                           PB4 PB5 PB8 PB9 */
+                           PB4 PB8 PB9 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10
                           |GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15
-                          |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_8|GPIO_PIN_9;
+                          |GPIO_PIN_4|GPIO_PIN_8|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
