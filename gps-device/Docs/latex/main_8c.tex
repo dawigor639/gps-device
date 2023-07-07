@@ -1,0 +1,1215 @@
+\doxysection{C\+:/\+Users/\+Dawid/\+Desktop/\+Projekt\+\_\+arm/gps-\/device/\+Core/\+Src/main.c File Reference}
+\hypertarget{main_8c}{}\label{main_8c}\index{C:/Users/Dawid/Desktop/Projekt\_arm/gps-\/device/Core/Src/main.c@{C:/Users/Dawid/Desktop/Projekt\_arm/gps-\/device/Core/Src/main.c}}
+
+
+\+: Main program body  
+
+
+{\ttfamily \#include \"{}main.\+h\"{}}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_subscriber}{Subscriber}}
+\begin{DoxyCompactList}\small\item\em Structure that contains information about the subscriber. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_device}{Device}}
+\begin{DoxyCompactList}\small\item\em Structure that contains current device properties. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8c_a0b75b12a9dcae2117fb16a7c3c43f910}\label{main_8c_a0b75b12a9dcae2117fb16a7c3c43f910} 
+\#define {\bfseries MAX\+\_\+\+PHONES}~10
+\begin{DoxyCompactList}\small\item\em Maximum number of subscribers allowed. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a4a07f4497a7b7cf9e0971d72c36736b7}\label{main_8c_a4a07f4497a7b7cf9e0971d72c36736b7} 
+\#define {\bfseries MAX\+\_\+\+SMS\+\_\+\+SIZE}~160
+\begin{DoxyCompactList}\small\item\em Maximum size of an SMS message. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a554b61cc842f901df3a1a71750aae798}\label{main_8c_a554b61cc842f901df3a1a71750aae798} 
+\#define {\bfseries MAX\+\_\+\+ICCID\+\_\+\+LEN}~22
+\begin{DoxyCompactList}\small\item\em Maximum length of an ICCID (Integrated Circuit Card Identifier) \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a9aeb7adca3e66813cb40b41fcadec38f}\label{main_8c_a9aeb7adca3e66813cb40b41fcadec38f} 
+\#define {\bfseries MAX\+\_\+\+PHONE\+\_\+\+LEN}~16
+\begin{DoxyCompactList}\small\item\em Maximum length of a phone number. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_afad3aadf1645aabf53eea7d30a839411}\label{main_8c_afad3aadf1645aabf53eea7d30a839411} 
+\#define {\bfseries MAX\+\_\+\+SETTINGS}~3
+\begin{DoxyCompactList}\small\item\em Maximum number of settings. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a105e318640c8dd52c3c8f26266e1e70d}\label{main_8c_a105e318640c8dd52c3c8f26266e1e70d} 
+\#define {\bfseries MAX\+\_\+\+TIME\+\_\+\+LEN}~14
+\begin{DoxyCompactList}\small\item\em Maximum length of time. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a006ffd51e75ea3787e663a6af7c3f08b}\label{main_8c_a006ffd51e75ea3787e663a6af7c3f08b} 
+\#define {\bfseries MAX\+\_\+\+CIRCLE\+\_\+\+LEN}~29
+\begin{DoxyCompactList}\small\item\em Maximum length of a circle. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a20242bebf43979735e781c46e208d067}\label{main_8c_a20242bebf43979735e781c46e208d067} 
+\#define {\bfseries FORMATTED\+\_\+\+TIME\+\_\+\+LEN}~20
+\begin{DoxyCompactList}\small\item\em Length of a formatted time string. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a4db292d398e4e23ea992bfd8fa13eb9a}\label{main_8c_a4db292d398e4e23ea992bfd8fa13eb9a} 
+\#define {\bfseries UNIX\+\_\+\+TIME\+\_\+\+LEN}~10
+\begin{DoxyCompactList}\small\item\em Length of a UNIX timestamp. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a3fd5ab5d380936ded4f6cbe6fe24dca8}\label{main_8c_a3fd5ab5d380936ded4f6cbe6fe24dca8} 
+\#define {\bfseries MAX\+\_\+\+FILE\+\_\+\+LEN}~539
+\begin{DoxyCompactList}\small\item\em Maximum length of a file name. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_ab65afacbfda3b4d1620f8a1f5708a0c7}\label{main_8c_ab65afacbfda3b4d1620f8a1f5708a0c7} 
+\#define {\bfseries MAX\+\_\+\+GPS\+\_\+\+RESPONSE}~120
+\begin{DoxyCompactList}\small\item\em Maximum size of a GPS response. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_acfc9a3ca80efd275fa174d6f39e3c6b5}\label{main_8c_acfc9a3ca80efd275fa174d6f39e3c6b5} 
+\#define {\bfseries MAX\+\_\+\+INDEX\+\_\+\+LEN}~5
+\begin{DoxyCompactList}\small\item\em Maximum length of an index. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_ae6d76b1eae3b07b74100cbd35df31e67}\label{main_8c_ae6d76b1eae3b07b74100cbd35df31e67} 
+\#define {\bfseries MAX\+\_\+\+CMGL\+\_\+\+RECORD\+\_\+\+SIZE}~260
+\begin{DoxyCompactList}\small\item\em Maximum size of a CMGL (command response) record. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_ac9ee68ca93ad6113f27ba77f149eb612}\label{main_8c_ac9ee68ca93ad6113f27ba77f149eb612} 
+\#define {\bfseries MAX\+\_\+\+AT\+\_\+\+RESPONSE}~100
+\begin{DoxyCompactList}\small\item\em Maximum size of an AT command response. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a306446391db726482109d59e393e1a3e}\label{main_8c_a306446391db726482109d59e393e1a3e} 
+\#define {\bfseries LATITUDE\+\_\+\+MIN}~-\/90
+\begin{DoxyCompactList}\small\item\em Minimum value for latitude. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_adce252ea85f1ecd7c4e5a7270ae29b29}\label{main_8c_adce252ea85f1ecd7c4e5a7270ae29b29} 
+\#define {\bfseries LATITUDE\+\_\+\+MAX}~90
+\begin{DoxyCompactList}\small\item\em Maximum value for latitude. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a8ef203452cae33158c3199841fc7e3c8}\label{main_8c_a8ef203452cae33158c3199841fc7e3c8} 
+\#define {\bfseries LONGITUDE\+\_\+\+MIN}~-\/180
+\begin{DoxyCompactList}\small\item\em Minimum value for longitude. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a794053c3153d4716220d75bb4c85477d}\label{main_8c_a794053c3153d4716220d75bb4c85477d} 
+\#define {\bfseries LONGITUDE\+\_\+\+MAX}~180
+\begin{DoxyCompactList}\small\item\em Maximum value for longitude. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a6b9880fa336856728f874385983f7737}\label{main_8c_a6b9880fa336856728f874385983f7737} 
+\#define {\bfseries RADIUS\+\_\+\+MIN}~50
+\begin{DoxyCompactList}\small\item\em Minimum value for radius. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a3923a2502324557507dda8740810aca3}\label{main_8c_a3923a2502324557507dda8740810aca3} 
+\#define {\bfseries RADIUS\+\_\+\+MAX}~6371000
+\begin{DoxyCompactList}\small\item\em Maximum value for radius. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a30c151b370596b4a36ea5d35b478b719}\label{main_8c_a30c151b370596b4a36ea5d35b478b719} 
+\#define {\bfseries UNIX\+\_\+\+TIME\+\_\+\+MIN}~1678970022
+\begin{DoxyCompactList}\small\item\em Minimum value for UNIX timestamp. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_ac208515bca19908d36ec22a4d1945b78}\label{main_8c_ac208515bca19908d36ec22a4d1945b78} 
+\#define {\bfseries UNIX\+\_\+\+TIME\+\_\+\+MAX}~2147483647
+\begin{DoxyCompactList}\small\item\em Maximum value for UNIX timestamp. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a84cfd0f2d93d052938c53980beba2264}\label{main_8c_a84cfd0f2d93d052938c53980beba2264} 
+\#define {\bfseries REQUEST\+\_\+\+ID\+\_\+\+LEN}~14
+\begin{DoxyCompactList}\small\item\em Length of a request ID. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_af1cfd2a7bc27f404430112a4981e5086}\label{main_8c_af1cfd2a7bc27f404430112a4981e5086} 
+\#define {\bfseries LATITUDE\+\_\+\+DEFAULT}~52
+\begin{DoxyCompactList}\small\item\em Default latitude value. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a50b8d46ef1dc8b534b01fd3e6c8383c5}\label{main_8c_a50b8d46ef1dc8b534b01fd3e6c8383c5} 
+\#define {\bfseries LONGITUDE\+\_\+\+DEFAULT}~19
+\begin{DoxyCompactList}\small\item\em Default longitude value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{main_8c_a70af21c671abfcc773614a9a4f63d920}{System\+Clock\+\_\+\+Config}} (void)
+\begin{DoxyCompactList}\small\item\em System Clock Configuration. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a925534fb8bf7ca464fd05c982fe4bfa0}{HAL\+\_\+\+UARTEx\+\_\+\+Rx\+Event\+Callback}} (UART\+\_\+\+Handle\+Type\+Def \texorpdfstring{$\ast$}{*}huart, uint16\+\_\+t Size)
+\begin{DoxyCompactList}\small\item\em This is a callback function, when UART receive event occurs it sets a flag indicating that the UART is ready. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a0e0456ea96d55db31de947fb3e954f18}{HAL\+\_\+\+UART\+\_\+\+Error\+Callback}} (UART\+\_\+\+Handle\+Type\+Def \texorpdfstring{$\ast$}{*}huart)
+\begin{DoxyCompactList}\small\item\em This callback function sets a flag indicating an error occurred during UART communication. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a1303dc25d090e978c3a6663184894cdf}{uart\+Read}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}data, const uint16\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em The function reads data from UART using DMA and stores it in a buffer. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a7018f2fc7ab1715e1993975db5506e5e}{uart\+Send}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}data, const uint16\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em The function sends data through UART using the HAL library. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a6866333f8c733ae6959ff96b68ecdcd0}{uart\+Available}} ()
+\begin{DoxyCompactList}\small\item\em The function checks if UART is available and returns a boolean value accordingly. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_aa88a1ddde715e4670d9aef9de4a8fe32}{uart\+Errors}} ()
+\begin{DoxyCompactList}\small\item\em The function checks if there are any UART errors and returns a boolean value indicating the presence of errors. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a84866dc984f84745847a24c7f335618d}{send\+At\+Command}} (const char \texorpdfstring{$\ast$}{*}at\+Command, const uint32\+\_\+t timeout, const char \texorpdfstring{$\ast$}{*}expected\+Answer)
+\begin{DoxyCompactList}\small\item\em This function sends an AT command over UART and waits for a response within a specified timeout, returning true if the expected answer is found in the response and false otherwise. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a5562558e3ee43248ca3bc703c5fdbed9}{send\+At\+Command2}} (const char \texorpdfstring{$\ast$}{*}at\+Command, const uint32\+\_\+t timeout, const char \texorpdfstring{$\ast$}{*}expected\+Answer)
+\begin{DoxyCompactList}\small\item\em This function sends an AT command over UART and waits for a response within a specified timeout, checking if the response contains an expected answer. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_ad808b53da22c7524176570bad95e7923}{get\+Serial\+Response}} (const char \texorpdfstring{$\ast$}{*}at\+Command, const uint32\+\_\+t timeout, const char \texorpdfstring{$\ast$}{*}expected\+Answer, char \texorpdfstring{$\ast$}{*}receive\+Buffer, const uint16\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em This function sends an AT command over UART and waits for a response that matches an expected answer within a specified timeout period. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a614e8f2239f23dc52eff39aca9cebca4}{get\+Serial\+Response2}} (const uint32\+\_\+t timeout, char \texorpdfstring{$\ast$}{*}receive\+Buffer, const uint16\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em This function reads data from UART and waits for a response within a specified timeout period. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a13104cae588377ccc49076931ea656aa}{wait\+Connect}} (const uint8\+\_\+t max\+Attempts)
+\begin{DoxyCompactList}\small\item\em The function checks connection with module by sending an AT command specified number of times. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_ac19f8ab2373f902a3a98d858fda28662}{get\+Text}} (char \texorpdfstring{$\ast$}{*}output, const char \texorpdfstring{$\ast$}{*}input, const uint32\+\_\+t output\+Size, const char \texorpdfstring{$\ast$}{*}delimiter1, const char \texorpdfstring{$\ast$}{*}delimiter2)
+\begin{DoxyCompactList}\small\item\em The function extracts a substring from a given input string using two delimiters and stores it in an output string. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_af61fabdbef20bd0d5ba8451bb483f184}{read\+Sms\+List}} (char \texorpdfstring{$\ast$}{*}sms\+List, const uint16\+\_\+t sms\+List\+Size)
+\begin{DoxyCompactList}\small\item\em This function reads unread SMS messages and stores them in a provided buffer. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_ab40edcb1ef4707494ccf54d5064c017c}{delete\+Sms}} (const char \texorpdfstring{$\ast$}{*}index)
+\begin{DoxyCompactList}\small\item\em The function deletes an SMS message with a specified index using an AT command. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a537dce947c309d330b0127f838bd747a}{store\+Sms}} (const char \texorpdfstring{$\ast$}{*}address, const char \texorpdfstring{$\ast$}{*}message)
+\begin{DoxyCompactList}\small\item\em The function stores an SMS message with a given address using AT commands. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a3bc08502ca8c202e0822cb9788b17055}{read\+Stored\+Count1}} (uint16\+\_\+t \texorpdfstring{$\ast$}{*}count)
+\begin{DoxyCompactList}\small\item\em The function reads the number of messages stored in memory storage 1 and returns a boolean value indicating success or failure. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_ab5f6572a317fab24ac32cab6166c4d58}{read\+Stored\+Count2}} (uint16\+\_\+t \texorpdfstring{$\ast$}{*}count)
+\begin{DoxyCompactList}\small\item\em The function reads the number of messages stored in memory storage 2 and returns a boolean value indicating success or failure. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_af5c73c93bf7a45604c8f5d044ab7564e}{send\+Stored\+Sms}} ()
+\begin{DoxyCompactList}\small\item\em The function sends stored SMS messages and deletes all sent and read messages. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a32f3dbf969fa43622d06260775ebefdb}{write\+File}} (const char \texorpdfstring{$\ast$}{*}settings)
+\begin{DoxyCompactList}\small\item\em The function writes a file named \"{}settings.\+txt\"{} with the contents of the input string to a specific location using AT commands. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_acc49e51d0b5d1f30b3c1c365e748711d}{read\+File\+Size}} (uint16\+\_\+t \texorpdfstring{$\ast$}{*}file\+Size)
+\begin{DoxyCompactList}\small\item\em This function reads the size of a file named \"{}settings.\+txt\"{} using AT commands and returns a boolean value indicating success or failure. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a889ab8ef51dc1de231863564e711a6d8}{read\+File}} (char \texorpdfstring{$\ast$}{*}settings)
+\begin{DoxyCompactList}\small\item\em The function reads a file and returns its contents in text format. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a0b53209ff0e805038fd592c5c1fabe0f}{set\+Iccid}} (char \texorpdfstring{$\ast$}{*}iccid)
+\begin{DoxyCompactList}\small\item\em The function sets the ICCID and returns a boolean value indicating success or failure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{main_8c_a47fee0b86e68fd32fc8f8733e6931488}{copy\+Device}} (const struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em The function copies a device struct and its members to a new memory location. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_ade05be394a98968fcbe1117a2f0d6919}{struct\+To\+String}} (char \texorpdfstring{$\ast$}{*}str, const struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em The function converts given struct to a string format. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a6c9c797f5a77cfc5e5b55de2ee1d3f9a}{string\+To\+Struct}} (const char \texorpdfstring{$\ast$}{*}str, struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em The function reads the information from the string and writes the data into a given structure. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_af545f0d3a817bba9ef95d465734df59e}{handle\+Read\+File}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em The function reads a file and converts its contents to a struct. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a3f36f3b93ff4ff83ef467f957d51ad39}{handle\+Write\+File}} (const struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em The function handles writing data to a file. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a2d98933ceb1f5e2d710a0b0edb6c5293}{find\+Subscriber}} (int \texorpdfstring{$\ast$}{*}index, const struct \mbox{\hyperlink{struct_subscriber}{Subscriber}} \texorpdfstring{$\ast$}{*}subscribers\+Arr, const int \texorpdfstring{$\ast$}{*}count, const char \texorpdfstring{$\ast$}{*}address)
+\begin{DoxyCompactList}\small\item\em The function searches for a subscriber in an array of subscribers based on their address and returns their index if found. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_ad5c89f80a06f6148b76396e46d61c749}{subscribe}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device, struct \mbox{\hyperlink{struct_subscriber}{Subscriber}} \texorpdfstring{$\ast$}{*}new\+Subscriber)
+\begin{DoxyCompactList}\small\item\em Function handles subscription and updates the device\textquotesingle{}s subscribers list. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_af4e590037b4e24ced932e919dd31202b}{unsubscribe}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device, const char \texorpdfstring{$\ast$}{*}address)
+\begin{DoxyCompactList}\small\item\em The function unsubscribes a subscriber from a device and updates the device\textquotesingle{}s subscribers list. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a3c6928e4f0b26776c6d745ed11283b18}{fill\+Unix\+Time}} (time\+\_\+t \texorpdfstring{$\ast$}{*}unix\+Time, const char \texorpdfstring{$\ast$}{*}str)
+\begin{DoxyCompactList}\small\item\em Writes time and date parsed from text to Unix time variable. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a7e399cbccd6f2d6a513e04a3e8ea4edb}{unix\+Time\+To\+String}} (char \texorpdfstring{$\ast$}{*}str, const time\+\_\+t \texorpdfstring{$\ast$}{*}unix\+Time)
+\begin{DoxyCompactList}\small\item\em The function converts a Unix timestamp to a formatted string representing the date and time. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a2d474b0cbd49739b75677ca913e12b9f}{set\+Position\+And\+Time}} (float \texorpdfstring{$\ast$}{*}position, time\+\_\+t \texorpdfstring{$\ast$}{*}unix\+Time, const char \texorpdfstring{$\ast$}{*}gps\+Buffer)
+\begin{DoxyCompactList}\small\item\em The function extracts GPS position and time information from a given buffer and saves them using given parameters. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a8ad03fd776dc3cb37f083e305119beb2}{gps\+Positioning}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device, const uint32\+\_\+t timeout)
+\begin{DoxyCompactList}\small\item\em The function attempts to retrieve and store navigation information parsed from NMEA Sentences within a specified timeout period. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a59ca8095df04882ea6bc258178e2d0f4}{prefix}} (const char \texorpdfstring{$\ast$}{*}str, const char \texorpdfstring{$\ast$}{*}pre)
+\begin{DoxyCompactList}\small\item\em The function checks if a given string has a certain prefix. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{main_8c_a4cc0c99e932219efeb61637481565bdb}{find\+Length}} (const char \texorpdfstring{$\ast$}{*}input)
+\begin{DoxyCompactList}\small\item\em Finds the length written as string and returns it as an integer. \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{main_8c_a57c5256561c3483f9158c57bd2ff6e5b}{split\+Text}} (char \texorpdfstring{$\ast$}{*}input)
+\begin{DoxyCompactList}\small\item\em The function splits a given input string into multiple substrings based on the delimiter \"{}\textbackslash{}r\textbackslash{}n\"{} and returns the count of substrings. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{main_8c_a47966e6290a2192b29d334abd08855de}{haversine}} (double lat1, double lng1, double lat2, double lng2)
+\begin{DoxyCompactList}\small\item\em The function calculates the distance between two points on Earth using the Haversine formula. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_ab2e4d6684f1809c630b597820594833d}{circle\+To\+String}} (char \texorpdfstring{$\ast$}{*}str, struct \mbox{\hyperlink{struct_subscriber}{Subscriber}} \texorpdfstring{$\ast$}{*}subscribers\+Arr, int \texorpdfstring{$\ast$}{*}count, const char \texorpdfstring{$\ast$}{*}address)
+\begin{DoxyCompactList}\small\item\em Function converts the data contained in the structure into text. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a701e4381b24a679e865e5bbb0c8be528}{check\+Circles}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em The function checks whether the device\textquotesingle{}s position exceeds any of the circles set by subscribers, handles SMS notification writing and zone exceedance status changing. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a89befe5cb9939b8b7e63e90f68991910}{handle\+Notifications}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em Function handles notifications in case of zone exceedance. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a83acde03d4e6f1ed93a5e31a541ae93f}{valid\+Num}} (float number, float min, float max)
+\begin{DoxyCompactList}\small\item\em The function checks if a given number is within a specified range. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a60a1872406dfb6fec7eddd687e991c2c}{app\+Response}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device, const char \texorpdfstring{$\ast$}{*}address, const char \texorpdfstring{$\ast$}{*}request\+Id, const int response\+Code)
+\begin{DoxyCompactList}\small\item\em The function generates an SMS response with information about a device\textquotesingle{}s position and sends it to a specified address (phone number). \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a50804b654831352e5434587532d84df1}{process\+Message\+By\+Command}} (const char \texorpdfstring{$\ast$}{*}message, const char \texorpdfstring{$\ast$}{*}address, struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device, const char \texorpdfstring{$\ast$}{*}command)
+\begin{DoxyCompactList}\small\item\em This function process a message based on a command, the commands are different for SMS and app (SMS handled by the application). \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8c_a0e8d72ffc2609fc6934239124ad61da2}{process\+Message}} (const char \texorpdfstring{$\ast$}{*}message, const char \texorpdfstring{$\ast$}{*}address, struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em Function reads the prefix and the command contained in the message, if the message has a valid prefix then a function is called to handle the message based on the command. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a7187729f94ac76a8f4206fdad6f5d616}{handle\+Messages}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em The function handles SMS messages by reading and processing them, and then deleting them from the memory. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a71b0886edb3ca82b634b25f1a60cd045}{service\+Cycle}} (struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}device)
+\begin{DoxyCompactList}\small\item\em The function performs a service cycle for a device, including sending AT commands, GPS positioning, handling files, SMS messages and notifications. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a92e96207e90e09fb24bbfc825521546c}{enter\+Sleep}} (const int \texorpdfstring{$\ast$}{*}interval)
+\begin{DoxyCompactList}\small\item\em The function enters STOP/\+LOWPOWER mode for a specified interval using RTC wake-\/up timer and resumes normal operation after the interval. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a0c69728e19cb9eefc7b1d3e397213d9b}\label{main_8c_a0c69728e19cb9eefc7b1d3e397213d9b} 
+void {\bfseries enter\+Sleep\+Module} ()
+\begin{DoxyCompactList}\small\item\em Sets the DTR level to a high level so that the module enters sleep mode. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_af7c0929b9bad8e3cbc956a1cdb92abfe}\label{main_8c_af7c0929b9bad8e3cbc956a1cdb92abfe} 
+void {\bfseries quit\+Sleep\+Module} ()
+\begin{DoxyCompactList}\small\item\em Sets the DTR pin to a low level so that the module quits sleep mode. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_ae63ec71151d42d3f2543357c24796eb2}\label{main_8c_ae63ec71151d42d3f2543357c24796eb2} 
+void {\bfseries work\+Cycle} ()
+\begin{DoxyCompactList}\small\item\em The function initializes the device structure, calls the function \"{}service\+Cycle\"{} and enables sleep mode on module and microcontroller. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{main_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}} (void)
+\begin{DoxyCompactList}\small\item\em The application entry point. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a1730ffe1e560465665eb47d9264826f9}{Error\+\_\+\+Handler}} (void)
+\begin{DoxyCompactList}\small\item\em This function is executed in case of error occurrence. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8c_aa0c7fca836406ade332e1e3f1039d8ab}\label{main_8c_aa0c7fca836406ade332e1e3f1039d8ab} 
+RTC\+\_\+\+Handle\+Type\+Def {\bfseries hrtc}
+\begin{DoxyCompactList}\small\item\em Configuring and controlling a real-\/time clock (RTC) peripheral in a microcontroller. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a2cf715bef37f7e8ef385a30974a5f0d5}\label{main_8c_a2cf715bef37f7e8ef385a30974a5f0d5} 
+UART\+\_\+\+Handle\+Type\+Def {\bfseries huart1}
+\begin{DoxyCompactList}\small\item\em Controlling UART communication. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_a34251392f0d5e2461e3aef615918c235}\label{main_8c_a34251392f0d5e2461e3aef615918c235} 
+DMA\+\_\+\+Handle\+Type\+Def {\bfseries hdma\+\_\+usart1\+\_\+rx}
+\begin{DoxyCompactList}\small\item\em Configuring and managing data transfers using DMA (Direct Memory Access). \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_abd31f474ae2fefb554b0ce344dd6a03d}\label{main_8c_abd31f474ae2fefb554b0ce344dd6a03d} 
+volatile bool {\bfseries uart\+Ready} = 0
+\begin{DoxyCompactList}\small\item\em Used to indicate whether the UART is ready to send or receive data. \end{DoxyCompactList}\item 
+\Hypertarget{main_8c_afdead84e9146d037b400671069ac0e49}\label{main_8c_afdead84e9146d037b400671069ac0e49} 
+volatile uint8\+\_\+t {\bfseries uart\+Error} = 0
+\begin{DoxyCompactList}\small\item\em Used to indicate UART communication errors. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\+: Main program body 
+
+\begin{DoxyAttention}{Attention}
+
+\end{DoxyAttention}
+Copyright (c) 2022 STMicroelectronics. All rights reserved.
+
+This software is licensed under terms that can be found in the LICENSE file in the root directory of this software component. If no LICENSE file comes with this software, it is provided AS-\/\+IS. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{main_8c_a60a1872406dfb6fec7eddd687e991c2c}\label{main_8c_a60a1872406dfb6fec7eddd687e991c2c} 
+\index{main.c@{main.c}!appResponse@{appResponse}}
+\index{appResponse@{appResponse}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{appResponse()}{appResponse()}}
+{\footnotesize\ttfamily bool app\+Response (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{address,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{request\+Id,  }\item[{const int}]{response\+Code }\end{DoxyParamCaption})}
+
+
+
+The function generates an SMS response with information about a device\textquotesingle{}s position and sends it to a specified address (phone number). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & a pointer to a struct \doxylink{struct_device}{Device}. \\
+\hline
+{\em address} & The phone number of the recipient of the SMS response. \\
+\hline
+{\em request\+Id} & A string representing the unique identifier of the request. \\
+\hline
+{\em response\+Code} & An integer representing the response code to be sent in the SMS response.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a boolean value true. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a701e4381b24a679e865e5bbb0c8be528}\label{main_8c_a701e4381b24a679e865e5bbb0c8be528} 
+\index{main.c@{main.c}!checkCircles@{checkCircles}}
+\index{checkCircles@{checkCircles}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{checkCircles()}{checkCircles()}}
+{\footnotesize\ttfamily bool check\+Circles (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+The function checks whether the device\textquotesingle{}s position exceeds any of the circles set by subscribers, handles SMS notification writing and zone exceedance status changing. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & a pointer to a struct representing the device.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether any zone has been exceeded or not 
+\end{DoxyReturn}
+\Hypertarget{main_8c_ab2e4d6684f1809c630b597820594833d}\label{main_8c_ab2e4d6684f1809c630b597820594833d} 
+\index{main.c@{main.c}!circleToString@{circleToString}}
+\index{circleToString@{circleToString}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{circleToString()}{circleToString()}}
+{\footnotesize\ttfamily bool circle\+To\+String (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{str,  }\item[{struct \mbox{\hyperlink{struct_subscriber}{Subscriber}} \texorpdfstring{$\ast$}{*}}]{subscribers\+Arr,  }\item[{int \texorpdfstring{$\ast$}{*}}]{count,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{address }\end{DoxyParamCaption})}
+
+
+
+Function converts the data contained in the structure into text. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & A pointer to a character array where the function will store the string representation of the circle coordinates. \\
+\hline
+{\em subscribers\+Arr} & A pointer to an array of subscribers. \\
+\hline
+{\em count} & A pointer to an integer variable that holds the number of elements in the subscribers\+Arr array. \\
+\hline
+{\em address} & A pointer to a character string representing the address of a subscriber.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates success or failure. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a47fee0b86e68fd32fc8f8733e6931488}\label{main_8c_a47fee0b86e68fd32fc8f8733e6931488} 
+\index{main.c@{main.c}!copyDevice@{copyDevice}}
+\index{copyDevice@{copyDevice}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{copyDevice()}{copyDevice()}}
+{\footnotesize\ttfamily struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*} copy\+Device (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+The function copies a device struct and its members to a new memory location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & A pointer to a struct \doxylink{struct_device}{Device}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a pointer to a newly allocated {\ttfamily struct \doxylink{struct_device}{Device}} that is a copy of the input {\ttfamily device} struct. If memory allocation fails, it returns {\ttfamily NULL}. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_ab40edcb1ef4707494ccf54d5064c017c}\label{main_8c_ab40edcb1ef4707494ccf54d5064c017c} 
+\index{main.c@{main.c}!deleteSms@{deleteSms}}
+\index{deleteSms@{deleteSms}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{deleteSms()}{deleteSms()}}
+{\footnotesize\ttfamily bool delete\+Sms (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{index }\end{DoxyParamCaption})}
+
+
+
+The function deletes an SMS message with a specified index using an AT command. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Index of the SMS message to be deleted.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a boolean value, which indicates whether the SMS deletion was successful or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a92e96207e90e09fb24bbfc825521546c}\label{main_8c_a92e96207e90e09fb24bbfc825521546c} 
+\index{main.c@{main.c}!enterSleep@{enterSleep}}
+\index{enterSleep@{enterSleep}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{enterSleep()}{enterSleep()}}
+{\footnotesize\ttfamily void enter\+Sleep (\begin{DoxyParamCaption}\item[{const int \texorpdfstring{$\ast$}{*}}]{interval }\end{DoxyParamCaption})}
+
+
+
+The function enters STOP/\+LOWPOWER mode for a specified interval using RTC wake-\/up timer and resumes normal operation after the interval. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em interval} & A pointer to an integer variable that specifies the time interval (in milliseconds) after which the microcontroller should wake up from sleep mode. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_a1730ffe1e560465665eb47d9264826f9}\label{main_8c_a1730ffe1e560465665eb47d9264826f9} 
+\index{main.c@{main.c}!Error\_Handler@{Error\_Handler}}
+\index{Error\_Handler@{Error\_Handler}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{Error\_Handler()}{Error\_Handler()}}
+{\footnotesize\ttfamily void Error\+\_\+\+Handler (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+This function is executed in case of error occurrence. 
+
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a3c6928e4f0b26776c6d745ed11283b18}\label{main_8c_a3c6928e4f0b26776c6d745ed11283b18} 
+\index{main.c@{main.c}!fillUnixTime@{fillUnixTime}}
+\index{fillUnixTime@{fillUnixTime}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{fillUnixTime()}{fillUnixTime()}}
+{\footnotesize\ttfamily void fill\+Unix\+Time (\begin{DoxyParamCaption}\item[{time\+\_\+t \texorpdfstring{$\ast$}{*}}]{unix\+Time,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{str }\end{DoxyParamCaption})}
+
+
+
+Writes time and date parsed from text to Unix time variable. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em unix\+Time} & A pointer to a time\+\_\+t variable that will be filled with the Unix timestamp corresponding to the input string. \\
+\hline
+{\em str} & A string representing a date and time in the format \"{}\+YYYYMMDDHHMMSS\"{}. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_a4cc0c99e932219efeb61637481565bdb}\label{main_8c_a4cc0c99e932219efeb61637481565bdb} 
+\index{main.c@{main.c}!findLength@{findLength}}
+\index{findLength@{findLength}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{findLength()}{findLength()}}
+{\footnotesize\ttfamily int find\+Length (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{input }\end{DoxyParamCaption})}
+
+
+
+Finds the length written as string and returns it as an integer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & A pointer to a character array (string) containing a number at the end.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+an integer value which is the reverse of the last 3 digits of the input string. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a2d98933ceb1f5e2d710a0b0edb6c5293}\label{main_8c_a2d98933ceb1f5e2d710a0b0edb6c5293} 
+\index{main.c@{main.c}!findSubscriber@{findSubscriber}}
+\index{findSubscriber@{findSubscriber}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{findSubscriber()}{findSubscriber()}}
+{\footnotesize\ttfamily bool find\+Subscriber (\begin{DoxyParamCaption}\item[{int \texorpdfstring{$\ast$}{*}}]{index,  }\item[{const struct \mbox{\hyperlink{struct_subscriber}{Subscriber}} \texorpdfstring{$\ast$}{*}}]{subscribers\+Arr,  }\item[{const int \texorpdfstring{$\ast$}{*}}]{count,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{address }\end{DoxyParamCaption})}
+
+
+
+The function searches for a subscriber in an array of subscribers based on their address and returns their index if found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & pointer to an integer variable that will store the index of the subscriber. \\
+\hline
+{\em subscribers\+Arr} & A pointer to an array of subscribers. \\
+\hline
+{\em count} & Pointer to an integer variable that holds the number of elements in the subscribers\+Arr array. \\
+\hline
+{\em address} & The address parameter is a pointer to a character array that represents the address of a subscriber.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates success or failure. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_ad808b53da22c7524176570bad95e7923}\label{main_8c_ad808b53da22c7524176570bad95e7923} 
+\index{main.c@{main.c}!getSerialResponse@{getSerialResponse}}
+\index{getSerialResponse@{getSerialResponse}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{getSerialResponse()}{getSerialResponse()}}
+{\footnotesize\ttfamily bool get\+Serial\+Response (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{at\+Command,  }\item[{const uint32\+\_\+t}]{timeout,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{expected\+Answer,  }\item[{char \texorpdfstring{$\ast$}{*}}]{receive\+Buffer,  }\item[{const uint16\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+
+
+This function sends an AT command over UART and waits for a response that matches an expected answer within a specified timeout period. 
+
+Function writes response to the receive\+Buffer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em at\+Command} & AT command to be sent to a device via UART communication. \\
+\hline
+{\em timeout} & Maximum time in milliseconds that the function will wait for a response from the module before timimeout. \\
+\hline
+{\em expected\+Answer} & Text expected in the response. \\
+\hline
+{\em receive\+Buffer} & Buffer in which received data will be stored. \\
+\hline
+{\em size} & Number of characters that can be stored in the receive\+Buffer.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Value indicating whether the desired answer was found in the response of the module within the specified timeout period. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a614e8f2239f23dc52eff39aca9cebca4}\label{main_8c_a614e8f2239f23dc52eff39aca9cebca4} 
+\index{main.c@{main.c}!getSerialResponse2@{getSerialResponse2}}
+\index{getSerialResponse2@{getSerialResponse2}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{getSerialResponse2()}{getSerialResponse2()}}
+{\footnotesize\ttfamily bool get\+Serial\+Response2 (\begin{DoxyParamCaption}\item[{const uint32\+\_\+t}]{timeout,  }\item[{char \texorpdfstring{$\ast$}{*}}]{receive\+Buffer,  }\item[{const uint16\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+
+
+This function reads data from UART and waits for a response within a specified timeout period. 
+
+Function writes response to the receive\+Buffer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em timeout} & Maximum time in milliseconds that the function will wait for a response from the \\
+\hline
+{\em receive\+Buffer} & Buffer in which received data will be stored. \\
+\hline
+{\em size} & Number of characters that can be stored in the receive\+Buffer.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Value indicating whether the response of the module was received within the specified timeout period. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_ac19f8ab2373f902a3a98d858fda28662}\label{main_8c_ac19f8ab2373f902a3a98d858fda28662} 
+\index{main.c@{main.c}!getText@{getText}}
+\index{getText@{getText}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{getText()}{getText()}}
+{\footnotesize\ttfamily bool get\+Text (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{output,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{input,  }\item[{const uint32\+\_\+t}]{output\+Size,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{delimiter1,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{delimiter2 }\end{DoxyParamCaption})}
+
+
+
+The function extracts a substring from a given input string using two delimiters and stores it in an output string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to a character array where the extracted text will be stored. \\
+\hline
+{\em input} & A pointer to a character array containing the input string to be searched for the delimiters. \\
+\hline
+{\em output\+Size} & The maximum size of the output buffer \\
+\hline
+{\em delimiter1} & The first delimiter used to locate the beginning of the desired text in the input string. \\
+\hline
+{\em delimiter2} & The second delimiter used to extract a substring from the input string. If an empty string is passed as delimiter2, the function will extract the substring from the first delimiter until the end of the input string.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Value indicating whether the operation was successful or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a8ad03fd776dc3cb37f083e305119beb2}\label{main_8c_a8ad03fd776dc3cb37f083e305119beb2} 
+\index{main.c@{main.c}!gpsPositioning@{gpsPositioning}}
+\index{gpsPositioning@{gpsPositioning}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{gpsPositioning()}{gpsPositioning()}}
+{\footnotesize\ttfamily bool gps\+Positioning (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device,  }\item[{const uint32\+\_\+t}]{timeout }\end{DoxyParamCaption})}
+
+
+
+The function attempts to retrieve and store navigation information parsed from NMEA Sentences within a specified timeout period. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & Pointer to a struct representing the device. \\
+\hline
+{\em timeout} & The maximum time in milliseconds that the function will wait for valid GPS data before timing out and returning false.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Value indicating whether the GPS positioning was successful or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a0e0456ea96d55db31de947fb3e954f18}\label{main_8c_a0e0456ea96d55db31de947fb3e954f18} 
+\index{main.c@{main.c}!HAL\_UART\_ErrorCallback@{HAL\_UART\_ErrorCallback}}
+\index{HAL\_UART\_ErrorCallback@{HAL\_UART\_ErrorCallback}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{HAL\_UART\_ErrorCallback()}{HAL\_UART\_ErrorCallback()}}
+{\footnotesize\ttfamily void HAL\+\_\+\+UART\+\_\+\+Error\+Callback (\begin{DoxyParamCaption}\item[{UART\+\_\+\+Handle\+Type\+Def \texorpdfstring{$\ast$}{*}}]{huart }\end{DoxyParamCaption})}
+
+
+
+This callback function sets a flag indicating an error occurred during UART communication. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em huart} & UART handle structure. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_a925534fb8bf7ca464fd05c982fe4bfa0}\label{main_8c_a925534fb8bf7ca464fd05c982fe4bfa0} 
+\index{main.c@{main.c}!HAL\_UARTEx\_RxEventCallback@{HAL\_UARTEx\_RxEventCallback}}
+\index{HAL\_UARTEx\_RxEventCallback@{HAL\_UARTEx\_RxEventCallback}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{HAL\_UARTEx\_RxEventCallback()}{HAL\_UARTEx\_RxEventCallback()}}
+{\footnotesize\ttfamily void HAL\+\_\+\+UARTEx\+\_\+\+Rx\+Event\+Callback (\begin{DoxyParamCaption}\item[{UART\+\_\+\+Handle\+Type\+Def \texorpdfstring{$\ast$}{*}}]{huart,  }\item[{uint16\+\_\+t}]{Size }\end{DoxyParamCaption})}
+
+
+
+This is a callback function, when UART receive event occurs it sets a flag indicating that the UART is ready. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em huart} & UART handle structure. \\
+\hline
+{\em Size} & Amount of data to be received. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_a7187729f94ac76a8f4206fdad6f5d616}\label{main_8c_a7187729f94ac76a8f4206fdad6f5d616} 
+\index{main.c@{main.c}!handleMessages@{handleMessages}}
+\index{handleMessages@{handleMessages}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{handleMessages()}{handleMessages()}}
+{\footnotesize\ttfamily void handle\+Messages (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+The function handles SMS messages by reading and processing them, and then deleting them from the memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & a pointer to a struct \doxylink{struct_device}{Device}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The function does not have a return type specified, so it does not explicitly return anything. However, it may exit early and return nothing if the {\ttfamily \doxylink{main_8c_a3bc08502ca8c202e0822cb9788b17055}{read\+Stored\+Count1()}} or {\ttfamily \doxylink{main_8c_af61fabdbef20bd0d5ba8451bb483f184}{read\+Sms\+List()}} functions return false. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a89befe5cb9939b8b7e63e90f68991910}\label{main_8c_a89befe5cb9939b8b7e63e90f68991910} 
+\index{main.c@{main.c}!handleNotifications@{handleNotifications}}
+\index{handleNotifications@{handleNotifications}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{handleNotifications()}{handleNotifications()}}
+{\footnotesize\ttfamily void handle\+Notifications (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+Function handles notifications in case of zone exceedance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & A pointer to a struct \doxylink{struct_device}{Device}. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_af545f0d3a817bba9ef95d465734df59e}\label{main_8c_af545f0d3a817bba9ef95d465734df59e} 
+\index{main.c@{main.c}!handleReadFile@{handleReadFile}}
+\index{handleReadFile@{handleReadFile}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{handleReadFile()}{handleReadFile()}}
+{\footnotesize\ttfamily bool handle\+Read\+File (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+The function reads a file and converts its contents to a struct. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & Pointer to a struct of type \doxylink{struct_device}{Device}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates success or failure. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a3f36f3b93ff4ff83ef467f957d51ad39}\label{main_8c_a3f36f3b93ff4ff83ef467f957d51ad39} 
+\index{main.c@{main.c}!handleWriteFile@{handleWriteFile}}
+\index{handleWriteFile@{handleWriteFile}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{handleWriteFile()}{handleWriteFile()}}
+{\footnotesize\ttfamily bool handle\+Write\+File (\begin{DoxyParamCaption}\item[{const struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+The function handles writing data to a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & Pointer to a struct of type \doxylink{struct_device}{Device}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates success or failure. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a47966e6290a2192b29d334abd08855de}\label{main_8c_a47966e6290a2192b29d334abd08855de} 
+\index{main.c@{main.c}!haversine@{haversine}}
+\index{haversine@{haversine}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{haversine()}{haversine()}}
+{\footnotesize\ttfamily double haversine (\begin{DoxyParamCaption}\item[{double}]{lat1,  }\item[{double}]{lng1,  }\item[{double}]{lat2,  }\item[{double}]{lng2 }\end{DoxyParamCaption})}
+
+
+
+The function calculates the distance between two points on Earth using the Haversine formula. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lat1} & Latitude of the first location in degrees \\
+\hline
+{\em lng1} & Longitude of the first location in degrees. \\
+\hline
+{\em lat2} & Latitude of the second point in degrees. \\
+\hline
+{\em lng2} & Longitude of the second point in degrees.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the distance between two points on the Earth\textquotesingle{}s surface, calculated using the Haversine formula. The distance is returned in meters. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a840291bc02cba5474a4cb46a9b9566fe}\label{main_8c_a840291bc02cba5474a4cb46a9b9566fe} 
+\index{main.c@{main.c}!main@{main}}
+\index{main@{main}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+The application entry point. 
+
+
+\begin{DoxyRetVals}{Return values}
+{\em int} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a59ca8095df04882ea6bc258178e2d0f4}\label{main_8c_a59ca8095df04882ea6bc258178e2d0f4} 
+\index{main.c@{main.c}!prefix@{prefix}}
+\index{prefix@{prefix}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{prefix()}{prefix()}}
+{\footnotesize\ttfamily bool prefix (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{str,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{pre }\end{DoxyParamCaption})}
+
+
+
+The function checks if a given string has a certain prefix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & A pointer to a character array representing the string to be checked for the prefix. \\
+\hline
+{\em pre} & The prefix string that we want to check if it is present at the beginning of the str string.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether string has a certain prefix or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a0e8d72ffc2609fc6934239124ad61da2}\label{main_8c_a0e8d72ffc2609fc6934239124ad61da2} 
+\index{main.c@{main.c}!processMessage@{processMessage}}
+\index{processMessage@{processMessage}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{processMessage()}{processMessage()}}
+{\footnotesize\ttfamily bool process\+Message (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{message,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{address,  }\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+Function reads the prefix and the command contained in the message, if the message has a valid prefix then a function is called to handle the message based on the command. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & A pointer to a character array containing the message to be processed. \\
+\hline
+{\em address} & Pointer to a string representing the phone number \\
+\hline
+{\em device} & A pointer to a struct \doxylink{struct_device}{Device}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates success or failure. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a50804b654831352e5434587532d84df1}\label{main_8c_a50804b654831352e5434587532d84df1} 
+\index{main.c@{main.c}!processMessageByCommand@{processMessageByCommand}}
+\index{processMessageByCommand@{processMessageByCommand}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{processMessageByCommand()}{processMessageByCommand()}}
+{\footnotesize\ttfamily bool process\+Message\+By\+Command (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{message,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{address,  }\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{command }\end{DoxyParamCaption})}
+
+
+
+This function process a message based on a command, the commands are different for SMS and app (SMS handled by the application). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & Pointer to a character array representing the message received by the device. \\
+\hline
+{\em address} & Pointer to a string representing the phone number \\
+\hline
+{\em device} & Pointer to a struct \doxylink{struct_device}{Device}. \\
+\hline
+{\em command} & Pointer to a character array representing the command to be processed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates success or failure. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a889ab8ef51dc1de231863564e711a6d8}\label{main_8c_a889ab8ef51dc1de231863564e711a6d8} 
+\index{main.c@{main.c}!readFile@{readFile}}
+\index{readFile@{readFile}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{readFile()}{readFile()}}
+{\footnotesize\ttfamily bool read\+File (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{settings }\end{DoxyParamCaption})}
+
+
+
+The function reads a file and returns its contents in text format. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em settings} & a pointer to a character array where the contents of the file will be stored\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the file was successfully read or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_acc49e51d0b5d1f30b3c1c365e748711d}\label{main_8c_acc49e51d0b5d1f30b3c1c365e748711d} 
+\index{main.c@{main.c}!readFileSize@{readFileSize}}
+\index{readFileSize@{readFileSize}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{readFileSize()}{readFileSize()}}
+{\footnotesize\ttfamily bool read\+File\+Size (\begin{DoxyParamCaption}\item[{uint16\+\_\+t \texorpdfstring{$\ast$}{*}}]{file\+Size }\end{DoxyParamCaption})}
+
+
+
+This function reads the size of a file named \"{}settings.\+txt\"{} using AT commands and returns a boolean value indicating success or failure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Size} & A pointer to a variable where the file size will be stored\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the file size was successfully read or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_af61fabdbef20bd0d5ba8451bb483f184}\label{main_8c_af61fabdbef20bd0d5ba8451bb483f184} 
+\index{main.c@{main.c}!readSmsList@{readSmsList}}
+\index{readSmsList@{readSmsList}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{readSmsList()}{readSmsList()}}
+{\footnotesize\ttfamily bool read\+Sms\+List (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{sms\+List,  }\item[{const uint16\+\_\+t}]{sms\+List\+Size }\end{DoxyParamCaption})}
+
+
+
+This function reads unread SMS messages and stores them in a provided buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sms\+List} & A pointer to a character array where the SMS list will be stored. \\
+\hline
+{\em sms\+List\+Size} & The maximum size of the character array {\ttfamily sms\+List} that will store the SMS list.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A boolean value indicating whether the function call was successful or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a3bc08502ca8c202e0822cb9788b17055}\label{main_8c_a3bc08502ca8c202e0822cb9788b17055} 
+\index{main.c@{main.c}!readStoredCount1@{readStoredCount1}}
+\index{readStoredCount1@{readStoredCount1}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{readStoredCount1()}{readStoredCount1()}}
+{\footnotesize\ttfamily bool read\+Stored\+Count1 (\begin{DoxyParamCaption}\item[{uint16\+\_\+t \texorpdfstring{$\ast$}{*}}]{count }\end{DoxyParamCaption})}
+
+
+
+The function reads the number of messages stored in memory storage 1 and returns a boolean value indicating success or failure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em count} & Number of stored messages.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the stored count was successfully read or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_ab5f6572a317fab24ac32cab6166c4d58}\label{main_8c_ab5f6572a317fab24ac32cab6166c4d58} 
+\index{main.c@{main.c}!readStoredCount2@{readStoredCount2}}
+\index{readStoredCount2@{readStoredCount2}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{readStoredCount2()}{readStoredCount2()}}
+{\footnotesize\ttfamily bool read\+Stored\+Count2 (\begin{DoxyParamCaption}\item[{uint16\+\_\+t \texorpdfstring{$\ast$}{*}}]{count }\end{DoxyParamCaption})}
+
+
+
+The function reads the number of messages stored in memory storage 2 and returns a boolean value indicating success or failure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em count} & Number of stored messages.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the stored count was successfully read or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a84866dc984f84745847a24c7f335618d}\label{main_8c_a84866dc984f84745847a24c7f335618d} 
+\index{main.c@{main.c}!sendAtCommand@{sendAtCommand}}
+\index{sendAtCommand@{sendAtCommand}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{sendAtCommand()}{sendAtCommand()}}
+{\footnotesize\ttfamily bool send\+At\+Command (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{at\+Command,  }\item[{const uint32\+\_\+t}]{timeout,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{expected\+Answer }\end{DoxyParamCaption})}
+
+
+
+This function sends an AT command over UART and waits for a response within a specified timeout, returning true if the expected answer is found in the response and false otherwise. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em at\+Command} & AT command to be sent to a device via UART communication. \\
+\hline
+{\em timeout} & Maximum time in milliseconds that the function will wait for a response from the module before timimeout. \\
+\hline
+{\em expected\+Answer} & Text expected in the response. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Value indicating whether the desired answer was found in the response of the module within the specified timeout period. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a5562558e3ee43248ca3bc703c5fdbed9}\label{main_8c_a5562558e3ee43248ca3bc703c5fdbed9} 
+\index{main.c@{main.c}!sendAtCommand2@{sendAtCommand2}}
+\index{sendAtCommand2@{sendAtCommand2}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{sendAtCommand2()}{sendAtCommand2()}}
+{\footnotesize\ttfamily bool send\+At\+Command2 (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{at\+Command,  }\item[{const uint32\+\_\+t}]{timeout,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{expected\+Answer }\end{DoxyParamCaption})}
+
+
+
+This function sends an AT command over UART and waits for a response within a specified timeout, checking if the response contains an expected answer. 
+
+Function also handles communication errors.
+
+
+\begin{DoxyParams}{Parameters}
+{\em at\+Command} & AT command to be sent to a device via UART communication. \\
+\hline
+{\em timeout} & Maximum time in milliseconds that the function will wait for a response from the module before timimeout. \\
+\hline
+{\em expected\+Answer} & Text expected in the response. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Value indicating whether the desired answer was found in the response of the module within the specified timeout period. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_af5c73c93bf7a45604c8f5d044ab7564e}\label{main_8c_af5c73c93bf7a45604c8f5d044ab7564e} 
+\index{main.c@{main.c}!sendStoredSms@{sendStoredSms}}
+\index{sendStoredSms@{sendStoredSms}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{sendStoredSms()}{sendStoredSms()}}
+{\footnotesize\ttfamily bool send\+Stored\+Sms (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The function sends stored SMS messages and deletes all sent and read messages. 
+
+\begin{DoxyReturn}{Returns}
+Indicates whether the SMS sending process was successful or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a71b0886edb3ca82b634b25f1a60cd045}\label{main_8c_a71b0886edb3ca82b634b25f1a60cd045} 
+\index{main.c@{main.c}!serviceCycle@{serviceCycle}}
+\index{serviceCycle@{serviceCycle}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{serviceCycle()}{serviceCycle()}}
+{\footnotesize\ttfamily void service\+Cycle (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+The function performs a service cycle for a device, including sending AT commands, GPS positioning, handling files, SMS messages and notifications. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & a pointer to a struct representing a device\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The function may return at several points depending on the outcome of the if statements. If any of the if statements evaluate to false, the function will return without executing the remaining code. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a0b53209ff0e805038fd592c5c1fabe0f}\label{main_8c_a0b53209ff0e805038fd592c5c1fabe0f} 
+\index{main.c@{main.c}!setIccid@{setIccid}}
+\index{setIccid@{setIccid}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{setIccid()}{setIccid()}}
+{\footnotesize\ttfamily bool set\+Iccid (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{iccid }\end{DoxyParamCaption})}
+
+
+
+The function sets the ICCID and returns a boolean value indicating success or failure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em iccid} & pointer to character array where ICCID value will be stored.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Value indicating success or failure 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a2d474b0cbd49739b75677ca913e12b9f}\label{main_8c_a2d474b0cbd49739b75677ca913e12b9f} 
+\index{main.c@{main.c}!setPositionAndTime@{setPositionAndTime}}
+\index{setPositionAndTime@{setPositionAndTime}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{setPositionAndTime()}{setPositionAndTime()}}
+{\footnotesize\ttfamily bool set\+Position\+And\+Time (\begin{DoxyParamCaption}\item[{float \texorpdfstring{$\ast$}{*}}]{position,  }\item[{time\+\_\+t \texorpdfstring{$\ast$}{*}}]{unix\+Time,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{gps\+Buffer }\end{DoxyParamCaption})}
+
+
+
+The function extracts GPS position and time information from a given buffer and saves them using given parameters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & A pointer to a float array that will hold the latitude and longitude values extracted from the GPS buffer. \\
+\hline
+{\em unix\+Time} & A pointer to a time\+\_\+t variable. \\
+\hline
+{\em gps\+Buffer} & A character array containing GPS data.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates success or failure. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a57c5256561c3483f9158c57bd2ff6e5b}\label{main_8c_a57c5256561c3483f9158c57bd2ff6e5b} 
+\index{main.c@{main.c}!splitText@{splitText}}
+\index{splitText@{splitText}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{splitText()}{splitText()}}
+{\footnotesize\ttfamily uint16\+\_\+t split\+Text (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{input }\end{DoxyParamCaption})}
+
+
+
+The function splits a given input string into multiple substrings based on the delimiter \"{}\textbackslash{}r\textbackslash{}n\"{} and returns the count of substrings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & A pointer to a character array that contains the input text to be split.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Value which represents the number of times the delimiter \"{}\textbackslash{}r\textbackslash{}n\"{} was found in the input string. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a537dce947c309d330b0127f838bd747a}\label{main_8c_a537dce947c309d330b0127f838bd747a} 
+\index{main.c@{main.c}!storeSms@{storeSms}}
+\index{storeSms@{storeSms}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{storeSms()}{storeSms()}}
+{\footnotesize\ttfamily bool store\+Sms (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{address,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{message }\end{DoxyParamCaption})}
+
+
+
+The function stores an SMS message with a given address using AT commands. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em address} & The phone number or address of the recipient of the SMS message. \\
+\hline
+{\em message} & The message to be stored in the SMS memory of the device.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the SMS message was successfully stored or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a6c9c797f5a77cfc5e5b55de2ee1d3f9a}\label{main_8c_a6c9c797f5a77cfc5e5b55de2ee1d3f9a} 
+\index{main.c@{main.c}!stringToStruct@{stringToStruct}}
+\index{stringToStruct@{stringToStruct}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{stringToStruct()}{stringToStruct()}}
+{\footnotesize\ttfamily void string\+To\+Struct (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{str,  }\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+The function reads the information from the string and writes the data into a given structure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & A pointer to a character array containing the string to be parsed. \\
+\hline
+{\em device} & a pointer to a struct \doxylink{struct_device}{Device}. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_ade05be394a98968fcbe1117a2f0d6919}\label{main_8c_ade05be394a98968fcbe1117a2f0d6919} 
+\index{main.c@{main.c}!structToString@{structToString}}
+\index{structToString@{structToString}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{structToString()}{structToString()}}
+{\footnotesize\ttfamily void struct\+To\+String (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{str,  }\item[{const struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device }\end{DoxyParamCaption})}
+
+
+
+The function converts given struct to a string format. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & A pointer to a character array where the resulting string will be stored. \\
+\hline
+{\em device} & A pointer to a struct \doxylink{struct_device}{Device} \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_ad5c89f80a06f6148b76396e46d61c749}\label{main_8c_ad5c89f80a06f6148b76396e46d61c749} 
+\index{main.c@{main.c}!subscribe@{subscribe}}
+\index{subscribe@{subscribe}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{subscribe()}{subscribe()}}
+{\footnotesize\ttfamily bool subscribe (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device,  }\item[{struct \mbox{\hyperlink{struct_subscriber}{Subscriber}} \texorpdfstring{$\ast$}{*}}]{new\+Subscriber }\end{DoxyParamCaption})}
+
+
+
+Function handles subscription and updates the device\textquotesingle{}s subscribers list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & Pointer to a struct \doxylink{struct_device}{Device}. \\
+\hline
+{\em new\+Subscriber} & Pointer to a struct \doxylink{struct_subscriber}{Subscriber}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the subscribe operation was successful or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a70af21c671abfcc773614a9a4f63d920}\label{main_8c_a70af21c671abfcc773614a9a4f63d920} 
+\index{main.c@{main.c}!SystemClock\_Config@{SystemClock\_Config}}
+\index{SystemClock\_Config@{SystemClock\_Config}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SystemClock\_Config()}{SystemClock\_Config()}}
+{\footnotesize\ttfamily void System\+Clock\+\_\+\+Config (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+System Clock Configuration. 
+
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+Configure the main internal regulator output voltage
+
+Initializes the RCC Oscillators according to the specified parameters in the RCC\+\_\+\+Osc\+Init\+Type\+Def structure.
+
+Initializes the CPU, AHB and APB buses clocks\Hypertarget{main_8c_a6866333f8c733ae6959ff96b68ecdcd0}\label{main_8c_a6866333f8c733ae6959ff96b68ecdcd0} 
+\index{main.c@{main.c}!uartAvailable@{uartAvailable}}
+\index{uartAvailable@{uartAvailable}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{uartAvailable()}{uartAvailable()}}
+{\footnotesize\ttfamily bool uart\+Available (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The function checks if UART is available and returns a boolean value accordingly. 
+
+\begin{DoxyReturn}{Returns}
+UART readiness status. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_aa88a1ddde715e4670d9aef9de4a8fe32}\label{main_8c_aa88a1ddde715e4670d9aef9de4a8fe32} 
+\index{main.c@{main.c}!uartErrors@{uartErrors}}
+\index{uartErrors@{uartErrors}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{uartErrors()}{uartErrors()}}
+{\footnotesize\ttfamily bool uart\+Errors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The function checks if there are any UART errors and returns a boolean value indicating the presence of errors. 
+
+\begin{DoxyReturn}{Returns}
+Status of UART errors. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a1303dc25d090e978c3a6663184894cdf}\label{main_8c_a1303dc25d090e978c3a6663184894cdf} 
+\index{main.c@{main.c}!uartRead@{uartRead}}
+\index{uartRead@{uartRead}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{uartRead()}{uartRead()}}
+{\footnotesize\ttfamily void uart\+Read (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{data,  }\item[{const uint16\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+
+
+The function reads data from UART using DMA and stores it in a buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Buffer where the received data will be stored. \\
+\hline
+{\em size} & Number of bytes to be read. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_a7018f2fc7ab1715e1993975db5506e5e}\label{main_8c_a7018f2fc7ab1715e1993975db5506e5e} 
+\index{main.c@{main.c}!uartSend@{uartSend}}
+\index{uartSend@{uartSend}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{uartSend()}{uartSend()}}
+{\footnotesize\ttfamily void uart\+Send (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{data,  }\item[{const uint16\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+
+
+The function sends data through UART using the HAL library. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Buffer that contains the data to be transmitted over UART. \\
+\hline
+{\em size} & Number of bytes of data to be transmitted. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_a7e399cbccd6f2d6a513e04a3e8ea4edb}\label{main_8c_a7e399cbccd6f2d6a513e04a3e8ea4edb} 
+\index{main.c@{main.c}!unixTimeToString@{unixTimeToString}}
+\index{unixTimeToString@{unixTimeToString}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{unixTimeToString()}{unixTimeToString()}}
+{\footnotesize\ttfamily void unix\+Time\+To\+String (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{str,  }\item[{const time\+\_\+t \texorpdfstring{$\ast$}{*}}]{unix\+Time }\end{DoxyParamCaption})}
+
+
+
+The function converts a Unix timestamp to a formatted string representing the date and time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & A pointer to a character array where the formatted time string will be stored. \\
+\hline
+{\em unix\+Time} & A pointer to a time\+\_\+t variable that represents the Unix timestamp. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8c_af4e590037b4e24ced932e919dd31202b}\label{main_8c_af4e590037b4e24ced932e919dd31202b} 
+\index{main.c@{main.c}!unsubscribe@{unsubscribe}}
+\index{unsubscribe@{unsubscribe}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{unsubscribe()}{unsubscribe()}}
+{\footnotesize\ttfamily bool unsubscribe (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_device}{Device}} \texorpdfstring{$\ast$}{*}}]{device,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{address }\end{DoxyParamCaption})}
+
+
+
+The function unsubscribes a subscriber from a device and updates the device\textquotesingle{}s subscribers list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em device} & Pointer to a struct \doxylink{struct_device}{Device}, which contains information about a device and its subscribers. \\
+\hline
+{\em address} & The address of the subscriber that needs to be unsubscribed from the device\textquotesingle{}s list of subscribers.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the unsubscribe operation was successful or not. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a83acde03d4e6f1ed93a5e31a541ae93f}\label{main_8c_a83acde03d4e6f1ed93a5e31a541ae93f} 
+\index{main.c@{main.c}!validNum@{validNum}}
+\index{validNum@{validNum}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{validNum()}{validNum()}}
+{\footnotesize\ttfamily bool valid\+Num (\begin{DoxyParamCaption}\item[{float}]{number,  }\item[{float}]{min,  }\item[{float}]{max }\end{DoxyParamCaption})}
+
+
+
+The function checks if a given number is within a specified range. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em number} & A float number that needs to be checked if it falls within the range of min and max. \\
+\hline
+{\em min} & The minimum value that the input number can have to be considered valid. \\
+\hline
+{\em max} & The maximum value that the input number can have to be considered valid.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the input {\ttfamily number} is within the range specified by {\ttfamily min} and {\ttfamily max}. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a13104cae588377ccc49076931ea656aa}\label{main_8c_a13104cae588377ccc49076931ea656aa} 
+\index{main.c@{main.c}!waitConnect@{waitConnect}}
+\index{waitConnect@{waitConnect}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{waitConnect()}{waitConnect()}}
+{\footnotesize\ttfamily bool wait\+Connect (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t}]{max\+Attempts }\end{DoxyParamCaption})}
+
+
+
+The function checks connection with module by sending an AT command specified number of times. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em max\+Attempts} & The maximum number of attempts to send the \"{}\+AT\"{} command.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether a positive response has been received. 
+\end{DoxyReturn}
+\Hypertarget{main_8c_a32f3dbf969fa43622d06260775ebefdb}\label{main_8c_a32f3dbf969fa43622d06260775ebefdb} 
+\index{main.c@{main.c}!writeFile@{writeFile}}
+\index{writeFile@{writeFile}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{writeFile()}{writeFile()}}
+{\footnotesize\ttfamily bool write\+File (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{settings }\end{DoxyParamCaption})}
+
+
+
+The function writes a file named \"{}settings.\+txt\"{} with the contents of the input string to a specific location using AT commands. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em settings} & Data that will be written to the file.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Indicates whether the write operation was successful or not. 
+\end{DoxyReturn}

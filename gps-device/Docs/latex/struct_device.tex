@@ -1,0 +1,36 @@
+\doxysection{Device Struct Reference}
+\hypertarget{struct_device}{}\label{struct_device}\index{Device@{Device}}
+
+
+Structure that contains current device properties.  
+
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_device_af58fd6cb913ea5bd325ec6b43f258f97}\label{struct_device_af58fd6cb913ea5bd325ec6b43f258f97} 
+float {\bfseries position} \mbox{[}2\mbox{]}
+\begin{DoxyCompactList}\small\item\em Array of two floating-\/point numbers representing the latitude and longitude of the device current position. \end{DoxyCompactList}\item 
+\Hypertarget{struct_device_a97323cec26ebdc2493bc55aea7ee47b7}\label{struct_device_a97323cec26ebdc2493bc55aea7ee47b7} 
+time\+\_\+t {\bfseries unix\+Time}
+\begin{DoxyCompactList}\small\item\em Time related to the current position of the device, corresponds to the Unix timestamp. \end{DoxyCompactList}\item 
+\Hypertarget{struct_device_ae0c690118932b32ef40a74bb6a259acd}\label{struct_device_ae0c690118932b32ef40a74bb6a259acd} 
+int {\bfseries interval}
+\begin{DoxyCompactList}\small\item\em Period of time between device cycles. \end{DoxyCompactList}\item 
+\Hypertarget{struct_device_adfda691d0547b39c7db73e335400b04d}\label{struct_device_adfda691d0547b39c7db73e335400b04d} 
+struct \mbox{\hyperlink{struct_subscriber}{Subscriber}} {\bfseries subscribers} \mbox{[}10\mbox{]}
+\begin{DoxyCompactList}\small\item\em Array of subscribers assigned to the device. \end{DoxyCompactList}\item 
+\Hypertarget{struct_device_ad43c3812e6d13e0518d9f8b8f463ffcf}\label{struct_device_ad43c3812e6d13e0518d9f8b8f463ffcf} 
+int {\bfseries count}
+\begin{DoxyCompactList}\small\item\em Represents the number of subscribers assigned to the device. \end{DoxyCompactList}\item 
+\Hypertarget{struct_device_a197b9d7938ad7a20121130fd88c4c377}\label{struct_device_a197b9d7938ad7a20121130fd88c4c377} 
+char {\bfseries iccid} \mbox{[}23\mbox{]}
+\begin{DoxyCompactList}\small\item\em Unique identification number assigned to the SIM card. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structure that contains current device properties. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Dawid/\+Desktop/\+Projekt\+\_\+arm/gps-\/device/\+Core/\+Src/\mbox{\hyperlink{main_8c}{main.\+c}}\end{DoxyCompactItemize}
