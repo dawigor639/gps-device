@@ -1538,16 +1538,16 @@ void workCycle() {
     // Structure that contains current device properties
 	struct Device device = {0};
     // Factory interval in seconds
-	device.interval = 120; 
+	device.interval = 120;
     // Call serviceCycle
 	serviceCycle(&device);
+    // Testing only!
+	// device.interval = 1;
     // Module will enter sleep mode
 	enterSleepModule();
     // The microcontroller will enter sleep mode
 	enterSleep(&(device.interval));
 }
-
-
 
 /* USER CODE END 0 */
 
@@ -1592,7 +1592,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //loop
+	  // Loop
 	  workCycle();
 
     /* USER CODE END WHILE */

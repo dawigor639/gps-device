@@ -6407,7 +6407,7 @@ void workCycle() {
  800361e:	2100      	movs	r1, #0
  8003620:	f005 fb6e 	bl	8008d00 <memset>
     // Factory interval in seconds
-	device.interval = 120; 
+	device.interval = 120;
  8003624:	f507 73cc 	add.w	r3, r7, #408	; 0x198
  8003628:	f5a3 73cc 	sub.w	r3, r3, #408	; 0x198
  800362c:	2278      	movs	r2, #120	; 0x78
@@ -6417,6 +6417,8 @@ void workCycle() {
  8003630:	463b      	mov	r3, r7
  8003632:	4618      	mov	r0, r3
  8003634:	f7ff ff1c 	bl	8003470 <serviceCycle>
+    // Testing only!
+	// device.interval = 1;
     // Module will enter sleep mode
 	enterSleepModule();
  8003638:	f7ff ffc2 	bl	80035c0 <enterSleepModule>
@@ -6472,7 +6474,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //loop
+	  // Loop
 	  workCycle();
  800366c:	f7ff ffca 	bl	8003604 <workCycle>
  8003670:	e7fc      	b.n	800366c <main+0x1c>
